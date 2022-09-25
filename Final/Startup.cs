@@ -37,6 +37,8 @@ namespace Final
             services.AddScoped<AccountService>();
             services.AddScoped<keepRepository>();
             services.AddScoped<keepService>();
+            services.AddScoped<vaultRepository>();
+            services.AddScoped<vaultService>();
         }
 
         private void ConfigureCors(IServiceCollection services)

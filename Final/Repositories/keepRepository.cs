@@ -43,8 +43,8 @@ namespace Final.Repositories
         a.*
         FROM newKeep k
         JOIN accounts a 
-        ON k.creatorId = a.id
-        WHERE id = @Id;
+        ON k.creatorId = a.Id
+        WHERE k.id = @id;
        
         
          ";
@@ -74,7 +74,7 @@ namespace Final.Repositories
         internal void Delete(int id)
         {
             string sql = @"
-        DELETE FROM keep
+        DELETE FROM newKeep 
          WHERE id = @id;
         ";
 
@@ -84,13 +84,13 @@ namespace Final.Repositories
         internal keep Update(keep update)
         {
             string sql = @"
-           UPDATE keep SET
-        name = @name,
-        img = @img,
-        description = @description,
-        views = @views,
+           UPDATE newKeep k SET
+        name = @Name,
+        img = @Img,
+        description = @Description,
+        views = @Views
         
-        WHERE id = @id;
+        WHERE k.id = @id;
            ";
             _db.Execute(sql, update);
             return update;

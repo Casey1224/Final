@@ -27,7 +27,7 @@ namespace Final.Services
                 throw new Exception($"No keep at id: {id}");
             }
             keep.views++;
-            kr.Update(keep);
+            // kr.Update(keep);
             return keep;
         }
 
@@ -38,7 +38,7 @@ namespace Final.Services
 
         internal keep Update(keep update, Account user)
         {
-            keep original = getKeepById(update.Id, user.Id);
+            keep original = kr.getKeepById(update.Id);
             if (original.creatorId != user.Id)
             {
                 throw new Exception($"cannot update {original.name} you are not the creator");
