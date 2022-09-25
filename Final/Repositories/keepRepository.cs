@@ -38,14 +38,15 @@ namespace Final.Repositories
         internal keep getKeepById(int id)
         {
             string sql = @"
-          SELECT
-          k.*,
-          a.*
-          FROM newKeep k
-          JOIN accounts a ON k.creatorId = a.id
-          WHERE k.id = @Id
-         
-         
+        SELECT
+        k.*,
+        a.*
+        FROM newKeep k
+        JOIN accounts a 
+        ON k.creatorId = a.id
+        WHERE id = @Id;
+       
+        
          ";
             return _db.Query<keep, Account, keep>(sql, (k, a) =>
             {
@@ -69,5 +70,39 @@ namespace Final.Repositories
             keepers.Id = id;
             return keepers;
         }
+
+        internal void Delete(int id)
+        {
+            string sql = @"
+        DELETE FROM keep
+         WHERE id = @id;
+        ";
+
+            _db.Execute(sql, new { id });
+        }
+
+        internal keep Update(keep update)
+        {
+            string sql = @"
+           UPDATE keep SET
+        name = @name,
+        img = @img,
+        description = @description,
+        views = @views,
+        
+        WHERE id = @id;
+           ";
+            _db.Execute(sql, update);
+            return update;
+        }
     }
 }
+
+
+
+// // SELECT
+//           k.*,
+//           a.*
+//           FROM newKeep k
+//           JOIN accounts a ON k.creatorId = a.id
+//           WHERE k.id = @Id
