@@ -3,6 +3,7 @@ using System.Data;
 using System.Linq;
 using Dapper;
 using Final.Models;
+using static Final.Models.keep;
 
 namespace Final.Repositories
 {
@@ -95,14 +96,47 @@ namespace Final.Repositories
             _db.Execute(sql, update);
             return update;
         }
+
+        internal List<keepvm> getKeepsByVaultId(int vaultId)
+        {
+
+
+
+            string sql = @"
+          SELECT 
+          
+          vk.*,
+          k.*,
+          a.*
+          
+         FROM newVaultKeep vk
+         JOIN newKeep k
+         ON vk.keepId = k.Id
+         JOIN accounts a
+         ON k.creatorId = a.Id
+         WHERE vk.vaultId = @vaultId;
+         
+
+          ";
+
+            List<keepvm> keeps = _db.Query<VaultKeep, keepvm, Account, keepvm>(sql, (vk, km, a) =>
+            {
+                km.creator = a;
+                km.vaultKeepId = vk.Id;
+                return km;
+            }, new { vaultId }).ToList();
+
+            return keeps;
+        }
     }
+
+
+
+
+
+
 }
 
 
 
-// // SELECT
-//           k.*,
-//           a.*
-//           FROM newKeep k
-//           JOIN accounts a ON k.creatorId = a.id
-//           WHERE k.id = @Id
+

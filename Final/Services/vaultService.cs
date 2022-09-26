@@ -1,18 +1,21 @@
 using System;
+using System.Collections.Generic;
 using Final.Models;
 using Final.Repositories;
+using static Final.Models.keep;
 
 namespace Final.Services
 {
     public class vaultService
     {
         private readonly vaultRepository vr;
+        private readonly keepRepository kr;
 
-        public vaultService(vaultRepository vr)
+        public vaultService(vaultRepository vr, keepRepository kr)
         {
             this.vr = vr;
+            this.kr = kr;
         }
-
 
         internal Vault createVault(Vault vaulters)
         {
@@ -54,5 +57,16 @@ namespace Final.Services
             vr.Delete(id);
             return $"{original.name} was deleted.";
         }
+        internal List<keepvm> getAllVaultKeeps(int id, string userId)
+        {
+            Vault vault = getVaultById(id, userId);
+            if (vault.isPrivate == true && vault.creatorId != userId)
+            {
+                new Exception("this isnt ur vault");
+            }
+            return kr.getKeepsByVaultId(id);
+
+        }
+
     }
 }

@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using CodeWorks.Auth0Provider;
 using Final.Models;
 using Final.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static Final.Models.keep;
 
 namespace Final.Controllers
 {
@@ -13,11 +15,14 @@ namespace Final.Controllers
     public class VaultsController : ControllerBase
     {
         private readonly vaultService _vs;
+        private readonly vaultKeepService _vks;
 
-        public VaultsController(vaultService vs)
+        public VaultsController(vaultService vs, vaultKeepService vks)
         {
             _vs = vs;
+            _vks = vks;
         }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<Vault>> getVaultById(int id)
         {
@@ -76,6 +81,20 @@ namespace Final.Controllers
                 Account user = await HttpContext.GetUserInfoAsync<Account>();
                 string message = _vs.Delete(id, user);
                 return Ok(message);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        [HttpGet("{id}/keeps")]
+        public async Task<ActionResult<List<keepvm>>> getAllVaultKeeps(int id)
+        {
+            try
+            {
+                Account user = await HttpContext.GetUserInfoAsync<Account>();
+                List<keepvm> vaultKeeps = _vs.getAllVaultKeeps(id, user.Id);
+                return Ok(vaultKeeps);
             }
             catch (Exception e)
             {

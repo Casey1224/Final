@@ -32,19 +32,7 @@ namespace Final.Controllers
                 return BadRequest(e.Message);
             }
         }
-        // [HttpGet("{id}")]
-        // public ActionResult<keep> getKeepById(int id)
-        // {
-        //     try
-        //     {
-        //         keep oneKeep = _ks.getKeepById(id);
-        //         return Ok(oneKeep);
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         return BadRequest(e.Message);
-        //     }
-        // }
+
 
         [HttpGet("{id}")]
         public async Task<ActionResult<keep>> getKeepById(int id)
