@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Final.Models;
 using Final.Repositories;
-using static Final.Models.keep;
 
 namespace Final.Services
 {
@@ -10,11 +9,13 @@ namespace Final.Services
     {
         private readonly vaultRepository vr;
         private readonly keepRepository kr;
+        private readonly vaultKeepRepository vkr;
 
-        public vaultService(vaultRepository vr, keepRepository kr)
+        public vaultService(vaultRepository vr, keepRepository kr, vaultKeepRepository vkr)
         {
             this.vr = vr;
             this.kr = kr;
+            this.vkr = vkr;
         }
 
         internal Vault createVault(Vault vaulters)
@@ -26,9 +27,13 @@ namespace Final.Services
         internal Vault getVaultById(int id, string userId)
         {
             Vault vault = vr.getVaultById(id);
+            if (vault.isPrivate == true && vault.creatorId != userId)
+            {
+                throw new Exception("this is locked");
+            }
             if (vault == null)
             {
-                throw new Exception($"No Vault at that id: {id}");
+                throw new Exception("no vault at this id");
             }
             return vault;
         }
@@ -46,6 +51,12 @@ namespace Final.Services
             return vr.Update(original);
         }
 
+        internal List<Vault> getAccountVaults(string id)
+        {
+            List<Vault> vaults = vr.getAccountVaults(id);
+            return vaults;
+        }
+
         internal string Delete(int id, Account user)
         {
             Vault original = getVaultById(id, user.Id);
@@ -58,19 +69,23 @@ namespace Final.Services
             return $"{original.name} was deleted.";
         }
 
-        internal List<Vault> GetProfileVault(string id)
+        internal List<Vault> getVaultsByProfId(string id)
         {
-            throw new NotImplementedException();
+            List<Vault> vaults = vr.getVaultsByProfId(id);
+            List<Vault> privateVault = vaults.FindAll(v => v.isPrivate != true);
+            return privateVault;
         }
+
+
 
         internal List<keepvm> getAllVaultKeeps(int id, string userId)
         {
-            Vault vault = getVaultById(id, userId);
+            Vault vault = vr.getVaultById(id);
             if (vault.isPrivate == true && vault.creatorId != userId)
             {
-                new Exception("this isnt ur vault");
+                throw new Exception("this isnt ur vault");
             }
-            return kr.getKeepsByVaultId(id);
+            return vkr.getKeepsByVaultId(id);
 
         }
 

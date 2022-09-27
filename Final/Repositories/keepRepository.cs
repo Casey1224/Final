@@ -3,7 +3,6 @@ using System.Data;
 using System.Linq;
 using Dapper;
 using Final.Models;
-using static Final.Models.keep;
 
 namespace Final.Repositories
 {
@@ -57,6 +56,29 @@ namespace Final.Repositories
                 new { id }).FirstOrDefault();
         }
 
+        internal List<keep> getKeepByProfileId(string id)
+        {
+            string sql = @"
+            SELECT 
+            k.*,
+            a.*
+            FROM newKeep k
+            JOIN accounts a ON k.creatorId = a.id
+            WHERE k.creatorId = @id;
+            ";
+            return _db.Query<keep, Account, keep>(sql, (k, a) =>
+            {
+                k.creator = a;
+                return k;
+            }, new { id }).ToList();
+
+        }
+
+
+
+
+
+
         internal keep createKeep(keep keepers)
         {
             string sql = @"
@@ -89,12 +111,35 @@ namespace Final.Repositories
         name = @Name,
         img = @Img,
         description = @Description,
-        views = @Views
+        views = @Views,
+        kept = @Kept
         
         WHERE k.id = @id;
            ";
             _db.Execute(sql, update);
             return update;
+        }
+
+        internal List<keepvm> getAllVaultKeeps(int id)
+        {
+            string sql = @"
+            SELECT 
+            v.*,
+            a.*,
+            k.*,
+            vk.*
+            FROM vault v
+            JOIN newVaultKeep vk ON v.id = vk.vaultId
+            JOIN newKeep k ON vk.keepId = k.id
+            JOIN accounts a ON k.creatorId = a.id
+            WHERE v.id = @id;
+            ";
+            return _db.Query<Vault, Account, keepvm, keep, keepvm>(sql, (v, a, kvm, vk) =>
+            {
+                kvm.creator = a;
+                kvm.vaultKeepId = vk.Id;
+                return kvm;
+            }, new { id }).ToList();
         }
 
         internal List<keepvm> getKeepsByVaultId(int vaultId)

@@ -10,13 +10,13 @@ namespace Final.Models
         public int views { get; set; }
         public int kept { get; set; }
         public Account creator { get; set; }
-
-        public class keepvm : keep
-        {
-
-            public int vaultKeepId { get; set; }
-        }
-
-
     }
+    public class keepvm : keep
+    {
+
+        public int vaultKeepId { get; set; }
+    }
+
+
+
 }

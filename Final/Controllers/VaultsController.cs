@@ -6,7 +6,6 @@ using Final.Models;
 using Final.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using static Final.Models.keep;
 
 namespace Final.Controllers
 {
@@ -16,11 +15,13 @@ namespace Final.Controllers
     {
         private readonly vaultService _vs;
         private readonly vaultKeepService _vks;
+        private readonly keepService _ks;
 
-        public VaultsController(vaultService vs, vaultKeepService vks)
+        public VaultsController(vaultService vs, vaultKeepService vks, keepService ks)
         {
             _vs = vs;
             _vks = vks;
+            _ks = ks;
         }
 
         [HttpGet("{id}")]
@@ -93,7 +94,7 @@ namespace Final.Controllers
             try
             {
                 Account user = await HttpContext.GetUserInfoAsync<Account>();
-                List<keepvm> vaultKeeps = _vs.getAllVaultKeeps(id, user.Id);
+                List<keepvm> vaultKeeps = _ks.getAllVaultKeeps(id, user?.Id);
                 return Ok(vaultKeeps);
             }
             catch (Exception e)

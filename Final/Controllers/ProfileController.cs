@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using CodeWorks.Auth0Provider;
 using Final.Models;
@@ -37,7 +38,33 @@ namespace Final.Controllers
                 return BadRequest(e.Message);
             }
         }
+        [HttpGet("{id}/keeps")]
+        public ActionResult<List<keep>> getKeepByProfileId(string id)
+        {
+            try
+            {
 
+                List<keep> keeps = _ks.getKeepByProfileId(id);
+                return Ok(keeps);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        [HttpGet("{id}/vaults")]
+        public ActionResult<List<Vault>> getVaultsByProfId(string id)
+        {
+            try
+            {
+                List<Vault> vaults = _vs.getVaultsByProfId(id);
+                return Ok(vaults);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
 
     }
 }

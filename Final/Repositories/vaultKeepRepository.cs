@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Dapper;
@@ -53,5 +54,24 @@ namespace Final.Repositories
             _db.Execute(sql, new { id });
         }
 
+        internal List<keepvm> getKeepsByVaultId(int id)
+        {
+            string sql = @"
+            SELECT
+            k.*,
+            vk.id as vaultKeepId,
+            a.*
+            FROM newVaultKeep vk
+            JOIN newKeep k ON k.id = vk.keepId
+            JOIN accounts a ON a.id = k.creatorId
+            WHERE vk.id = @id
+            
+            ";
+            return _db.Query<keepvm, Account, keepvm>(sql, (kvm, a) =>
+            {
+                kvm.creator = a;
+                return kvm;
+            }, new { id }).ToList();
+        }
     }
 }

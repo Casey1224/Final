@@ -8,13 +8,27 @@ namespace Final.Services
     public class vaultKeepService
     {
         private readonly vaultKeepRepository vkr;
+        private readonly vaultRepository vr;
+        private readonly keepRepository kr;
 
-        public vaultKeepService(vaultKeepRepository vkr)
+        public vaultKeepService(vaultKeepRepository vkr, vaultRepository vr, keepRepository kr)
         {
             this.vkr = vkr;
+            this.vr = vr;
+            this.kr = kr;
         }
+
         internal VaultKeep createVaultKeep(VaultKeep vaultKeepers)
         {
+            Vault vault = vr.getVaultById(vaultKeepers.vaultId);
+            if (vault.creatorId != vaultKeepers.creatorId)
+            {
+                throw new Exception("not accessable");
+            }
+            keep keep = kr.getKeepById(vaultKeepers.keepId);
+            keep.kept++;
+            kr.Update(keep);
+
             return vkr.createVaultKeep(vaultKeepers);
         }
 
@@ -45,6 +59,11 @@ namespace Final.Services
 
             return vaultKeep;
         }
+        // internal List<keepvm> getAllKeepsByVaultId(int id)
+        // {
+        //     Vault vault = vr.getVaultById(id);
+        //     return vkr.getAllKeepsByVaultId(vault.Id);
+        // }
 
     }
 }

@@ -66,6 +66,25 @@ namespace Final.Repositories
             return update;
         }
 
+        internal List<Vault> getAccountVaults(string id)
+        {
+            string sql = @"
+            SELECT
+            v.*,
+            a.*
+            FROM vault v
+            JOIN accounts a ON v.creatorId = a.id
+            WHERE v.creatorId = @id;
+            ";
+
+            return _db.Query<Vault, Account, Vault>(sql, (v, a) =>
+            {
+                v.creator = a;
+                return v;
+
+            }, new { id }).ToList();
+        }
+
         internal void Delete(int id)
         {
             string sql = @"
@@ -88,6 +107,26 @@ namespace Final.Repositories
             int id = _db.ExecuteScalar<int>(sql, vaulters);
             vaulters.Id = id;
             return vaulters;
+        }
+
+        internal List<Vault> getVaultsByProfId(string id)
+        {
+            string sql = @"
+            SELECT
+            v.*,
+            a.*
+            FROM vault v
+            JOIN accounts a ON v.creatorId = a.id
+            WHERE v.creatorId = @id;
+            ";
+
+            return _db.Query<Vault, Account, Vault>(sql, (v, a) =>
+            {
+                v.creator = a;
+                return v;
+
+            }, new { id }).ToList();
+
         }
     }
 }

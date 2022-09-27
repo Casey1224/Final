@@ -8,10 +8,12 @@ namespace Final.Services
     public class keepService
     {
         private readonly keepRepository kr;
+        private readonly vaultRepository vr;
 
-        public keepService(keepRepository kr)
+        public keepService(keepRepository kr, vaultRepository vr)
         {
             this.kr = kr;
+            this.vr = vr;
         }
 
         public List<keep> getAllKeeps()
@@ -50,6 +52,11 @@ namespace Final.Services
 
         }
 
+        internal List<keep> getKeepByProfileId(string id)
+        {
+            return kr.getKeepByProfileId(id);
+        }
+
         internal List<keep> GetProfileKeeps(string id)
         {
             throw new NotImplementedException();
@@ -64,6 +71,17 @@ namespace Final.Services
             }
             kr.Delete(id);
             return $"{original.name} was deleted.";
+        }
+
+        internal List<keepvm> getAllVaultKeeps(int id, string userId)
+        {
+            Vault vault = vr.getVaultById(id);
+
+            if (vault.isPrivate == true & vault.creatorId != userId)
+            {
+                throw new Exception("this is a private vault");
+            }
+            return kr.getAllVaultKeeps(id);
         }
     }
 }
