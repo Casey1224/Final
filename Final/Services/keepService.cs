@@ -50,7 +50,10 @@ namespace Final.Services
 
         }
 
-
+        internal List<keep> GetProfileKeeps(string id)
+        {
+            throw new NotImplementedException();
+        }
 
         internal string Delete(int id, Account user)
         {

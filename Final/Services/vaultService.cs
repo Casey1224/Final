@@ -57,6 +57,12 @@ namespace Final.Services
             vr.Delete(id);
             return $"{original.name} was deleted.";
         }
+
+        internal List<Vault> GetProfileVault(string id)
+        {
+            throw new NotImplementedException();
+        }
+
         internal List<keepvm> getAllVaultKeeps(int id, string userId)
         {
             Vault vault = getVaultById(id, userId);
