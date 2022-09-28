@@ -29,6 +29,11 @@ class KeepsService {
         const res = await api.delete('api/vaultkeeps/' + id)
         AppState.keeps = AppState.keeps.filter(k => k.id != id)
     }
+    // async getKeepsByProfileId() {
+    //     const res = await api.get(`api/profiles/${id}/keeps`)
+    //     logger.log('got keeps by account')
+    //     AppState.activeProfileKeeps = res.data
+    // }
 
 }
 

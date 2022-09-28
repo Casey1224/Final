@@ -90,7 +90,7 @@ export default {
             user: computed(() => AppState.account),
             route,
             goToProfile(id) {
-                Modal.getOrCreateInstance(document.getElementById('active-keep')).hide()
+                Modal.getOrCreateInstance(document.getElementById('keepModal')).hide()
                 router.push({ name: 'Profile', params: { id } })
             },
             async removeKeep(id, keepId) {
@@ -98,7 +98,7 @@ export default {
                     if (route.name == "Vault") {
                         if (await Pop.confirm("this cannot be undone, are you sure?")) {
                             await keepsService.removeVaultKeep(AppState.activeKeepVault.vaultKeepId)
-                            Modal.getOrCreateInstance(document.getElementById('active-keep')).hide()
+                            Modal.getOrCreateInstance(document.getElementById('keepModal')).hide()
                             await vaultsService.getVaultKeeps(AppState.activeVault.id)
                         }
                     }
@@ -106,7 +106,7 @@ export default {
                     if (route.name != 'Vault') {
                         if (await Pop.confirm("you sure you want to delete that?")) {
                             await keepsService.removeKeep(id, keepId)
-                            Modal.getOrCreateInstance(document.getElementById('active-keep')).hide()
+                            Modal.getOrCreateInstance(document.getElementById('keepModal')).hide()
                             await keepsService.getAll()
                         }
                     }
