@@ -35,20 +35,26 @@
                 <div class="modal-footer">
 
                     <div class="col-12 d-flex justify-content-between">
-                        <div>
 
-                            <router-link v-if="keep" :to="{name: 'Keep Details', params: {id:keep?.id}}">
-                                <button type="button" data-bs-dismiss="modal" class="btn btn-primary">See
-                                    Details</button>
-                            </router-link>
+                        <div class="dropdown" v-if="user.id != undefined">
+                            <button class="btn btn-outline dropdown-toggle" type="button" id="modalDropMenu"
+                                data-bs-toggle="dropdown" aria-expanded="false">ADD TO VAULT</button>
+                            <ul class="dropdown-menu" aria-labelledby="modalDropMenu">
+                                <li v-for="mv in myVaults" :key="mv.id" @click="addToVault(mv.id)">
+                                    <a class="dropdown-item" href="#">{{mv.name}}</a>
+                                </li>
+                            </ul>
                         </div>
 
-                        <div>
+
+
+                        <div class="" v-if="user?.id == keep.creator?.id"
+                            @click="removeKeep(keep.vaultKeepId, keep.id)">
                             <h6>🗑</h6>
                         </div>
                         <div>
-                            <img :src="keep.creator.picture" class=" modal-prof border border-circle"
-                                alt="">{{keep.creator.name}}
+                            <img :src="keep.creator?.picture" class=" selectable modal-prof border border-circle" alt=""
+                                @click="goToProfile(keep.creator?.id)">{{keep.creator?.name}}
                         </div>
                         <div>
 
@@ -67,13 +73,48 @@
 </template>
 <script>
 import { computed } from '@vue/reactivity';
+import { Modal } from 'bootstrap';
+import { useRouter, useRoute } from 'vue-router';
 import { AppState } from '../AppState';
+import { keepsService } from '../services/KeepsService';
+import { logger } from '../utils/Logger';
+import Pop from '../utils/Pop';
 
 export default {
     setup() {
+        const router = useRouter()
+        const route = useRoute()
         return {
+            myVaults: computed(() => AppState.vaults.filter(v => v.creator.id == AppState.account.id)),
+            keep: computed(() => AppState.activeKeep),
+            user: computed(() => AppState.account),
+            route,
+            goToProfile(id) {
+                Modal.getOrCreateInstance(document.getElementById('active-keep')).hide()
+                router.push({ name: 'Profile', params: { id } })
+            },
+            async removeKeep(id, keepId) {
+                try {
+                    if (route.name == "Vault") {
+                        if (await Pop.confirm("this cannot be undone, are you sure?")) {
+                            await keepsService.removeVaultKeep(AppState.activeKeepVault.vaultKeepId)
+                            Modal.getOrCreateInstance(document.getElementById('active-keep')).hide()
+                            await vaultsService.getVaultKeeps(AppState.activeVault.id)
+                        }
+                    }
 
-            keep: computed(() => AppState.activeKeep)
+                    if (route.name != 'Vault') {
+                        if (await Pop.confirm("you sure you want to delete that?")) {
+                            await keepsService.removeKeep(id, keepId)
+                            Modal.getOrCreateInstance(document.getElementById('active-keep')).hide()
+                            await keepsService.getAll()
+                        }
+                    }
+                } catch (error) {
+                    logger.log(error)
+                    Pop.toast(error.message)
+                }
+            }
         };
     },
 };

@@ -34,6 +34,12 @@ const routes = [
     component: loadPage('KeepDetailsPage'),
     beforeEnter: authSettled
   },
+  {
+    path: '/vault/:id',
+    name: 'Vault',
+    component: loadPage('VaultPage'),
+    beforeEnter: authSettled
+  },
 ]
 
 export const router = createRouter({
