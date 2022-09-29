@@ -40,8 +40,9 @@
                             <button class="btn btn-outline dropdown-toggle" type="button" id="modalDropMenu"
                                 data-bs-toggle="dropdown" aria-expanded="false">ADD TO VAULT</button>
                             <ul class="dropdown-menu" aria-labelledby="modalDropMenu">
-                                <li v-for="av in accountVaults" :key="av.id" @click="addToVault(av.id)">
-                                    <a class="dropdown-item" href="#">{{av.name}}</a>
+                                <li v-for="av in accountVaults" :key="av.id">
+                                    <a @click="addToVault(av.id, keep.id)" class="dropdown-item"
+                                        href="#">{{av.name}}</a>
                                 </li>
                             </ul>
                         </div>
@@ -101,10 +102,10 @@ export default {
                 router.push({ name: 'Profile', params: { id } })
             },
 
-            async addToVault(id) {
+            async addToVault(vaultId, keepId) {
                 try {
-                    await vaultKeepsService.addToVaultKeep(body)
-                    router.push({ name: 'Profile', params: { id } })
+                    await vaultKeepsService.addToVaultKeep(vaultId, keepId)
+                    Pop.toast("you added to a vault")
                 } catch (error) {
                     logger.log(error)
                 }
