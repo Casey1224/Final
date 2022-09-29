@@ -52,6 +52,10 @@
                             @click="removeKeep(keep.vaultKeepId, keep.id)">
                             <h6>🗑</h6>
                         </div>
+                        <div class="" v-if="route.name == 'Vault' && keep?.vaultKeepId != '' &&
+                        keep.creator?.id != user.id" @click="removeKeep(keep.vaultKeepId, keep.id)">
+                            <h6>🗑</h6>
+                        </div>
                         <div>
                             <img :src="keep.creator?.picture" class=" selectable modal-prof border border-circle" alt=""
                                 @click="goToProfile(keep.creator?.id)">{{keep.creator?.name}}
@@ -110,6 +114,22 @@ export default {
 
 
             },
+
+            // async removeKeep(id) {
+            //     try {
+            //         if (await Pop.confirm()) {
+            //             await keepsService.removeKeep(id)
+            //             Modal.getOrCreateInstance(document.getElementById("active-keep")).hide()
+            //         }
+            //     } catch (error) {
+            //         logger.log(error)
+            //         Pop.toast(error.message, "error")
+            //     }
+            // },
+
+
+
+
             async removeKeep(id, keepId) {
                 try {
                     if (route.name == "Vault") {

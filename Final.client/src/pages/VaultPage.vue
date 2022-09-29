@@ -47,12 +47,12 @@ export default {
 
             account: computed(() => AppState.account),
             keeps: computed(() => AppState.vaultKeeps),
-            async deleteVault(id) {
+            async deleteVault() {
                 try {
                     if (await Pop.confirm('are you sure you want to delete?')) {
                         await vaultsService.deleteVault(AppState.activeVault.id)
 
-                        router.push({ name: 'Profile', params: AppState.account.id })
+                        router.push({ name: 'Home', params: AppState.account.id })
 
                     }
                 } catch (error) {
