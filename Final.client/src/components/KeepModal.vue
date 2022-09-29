@@ -36,7 +36,7 @@
 
                     <div class="col-12 d-flex justify-content-between">
 
-                        <div class="dropdown" v-if="user.id != undefined">
+                        <div class="dropdown" v-if="user.id != null">
                             <button class="btn btn-outline dropdown-toggle" type="button" id="modalDropMenu"
                                 data-bs-toggle="dropdown" aria-expanded="false">ADD TO VAULT</button>
                             <ul class="dropdown-menu" aria-labelledby="modalDropMenu">
@@ -90,7 +90,7 @@ export default {
         const router = useRouter()
         const route = useRoute()
         return {
-            myVaults: computed(() => AppState.vaults),
+            myVaults: computed(() => AppState.vaults.filter(v => v.creator.id == AppState.account.id)),
             keep: computed(() => AppState.activeKeep),
             user: computed(() => AppState.account),
             route,
@@ -135,15 +135,15 @@ export default {
                     if (route.name == "Vault") {
                         if (await Pop.confirm("this cannot be undone, are you sure?")) {
                             await keepsService.removeVaultKeep(AppState.activeKeepVault.vaultKeepId)
-                            Modal.getOrCreateInstance(document.getElementById('keepModal')).hide()
-                            await vaultsService.getVaultKeeps(AppState.activeVault.id)
+                            Modal.getOrCreateInstance(document.getElementById('active-keep')).hide()
+                            await vaultsService.getVaultKeeps(AppState.vaultKeeps.id)
                         }
                     }
 
                     if (route.name != 'Vault') {
                         if (await Pop.confirm("you sure you want to delete that?")) {
                             await keepsService.removeKeep(id, keepId)
-                            Modal.getOrCreateInstance(document.getElementById('keepModal')).hide()
+                            Modal.getOrCreateInstance(document.getElementById('active-keep')).hide()
                             await keepsService.getAll()
                         }
                     }

@@ -19,14 +19,15 @@ class KeepsService {
         AppState.activeKeep = res.data
         logger.log('active', AppState.activeKeep)
     }
-    async removeKeep(id) {
-        const res = await api.delete('api/keeps/' + id)
+    async removeKeep(id, keepId) {
+        const res = await api.delete('api/keeps/' + keepId)
         logger.log('Delete Cultist', res.data)
         AppState.keeps = AppState.keeps.filter(k => k.id != id)
 
     }
     async removeVaultKeep(id) {
         const res = await api.delete('api/vaultkeeps/' + id)
+        logger.log('delete cultist', res.data)
         AppState.keeps = AppState.keeps.filter(k => k.id != id)
     }
     // async getKeepsByProfileId() {

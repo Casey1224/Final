@@ -16,6 +16,7 @@
 </template>
 <script>
 import { Modal } from 'bootstrap';
+import { AppState } from '../AppState';
 import { router } from '../router.js'
 import { keepsService } from '../services/KeepsService';
 import { logger } from '../utils/Logger';
@@ -31,6 +32,8 @@ export default {
         return {
             async setActive() {
                 try {
+                    AppState.activeKeep = props.keep
+                    props.keep.views++
                     Modal.getOrCreateInstance(document.getElementById("keepModal")).toggle();
                     await keepsService.getOne(props.keep.id)
                 } catch (error) {

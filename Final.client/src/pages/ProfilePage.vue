@@ -6,10 +6,10 @@
         <div class="col-4">
             <h2>{{profile?.name}}</h2>
 
-            <h6 v-if="account.id != profile.id">keeps:{{accountKeeps.length}}</h6>
+            <h6 v-if="account.id != profile.id">keeps:{{myKeeps.length}}</h6>
             <h6 v-if="account.id == profile.id">Keeps:{{myKeeps.length}}</h6>
             <h6 v-if="account.id == profile.id">Vaults:{{myVaults.length}}</h6>
-            <h6 v-if="account.id != profile.id">vaults:{{accountVaults.length}}</h6>
+            <h6 v-if="account.id != profile.id">vaults:{{myVaults.length}}</h6>
         </div>
     </div>
     <div class="row">
@@ -27,7 +27,7 @@
     </div>
     <p>VAULTS</p>
     <div class="row container " v-if="account.id != profile.id">
-        <div class="col-md-3 fixed-height selectable rounded" :title="v.name" v-for="v in accountVaults" :key="v.id"
+        <div class="col-md-3 fixed-height selectable rounded" :title="v.name" v-for="v in myVaults" :key="v.id"
             @click="goToVault(v.id)">
             <h4><b>{{ v.name }}</b></h4>
         </div>
