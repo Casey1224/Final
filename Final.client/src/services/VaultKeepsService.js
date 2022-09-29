@@ -10,8 +10,9 @@ class VaultKeepsService {
         AppState.activeVaultKeeps = res.data
     }
     async addToVaultKeep(body) {
-        const res = await api.post("api/vaultkeeps", body)
+        const res = await api.post("api/vaultkeeps")
         logger.log(res.data)
+        AppState.vaultKeeps = res.data
     }
     async removeKeep(id) {
         const res = await api.delete("api/vaultkeeps/" + id)
