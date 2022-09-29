@@ -29,8 +29,7 @@ namespace Final.Services
                 throw new Exception($"No keep at id: {id}");
             }
             keep.views++;
-            // kr.Update(keep);
-            return keep;
+            return kr.Update(keep);
         }
 
         internal keep createKeep(keep keepers)

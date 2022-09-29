@@ -21,32 +21,43 @@ import { computed } from '@vue/reactivity';
 import { onMounted } from 'vue';
 import { AppState } from '../AppState';
 import KeepCard from '../components/KeepCard.vue';
-import { router } from '../router';
 import { logger } from '../utils/Logger';
 import Pop from '../utils/Pop';
 import { vaultsService } from '../services/vaultsService.js'
 import { vaultKeepsService } from '../services/VaultKeepsService.js'
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 export default {
+    name: 'Vault',
     setup() {
-        const route = useRoute()
-        onMounted(async () => {
+        const route = useRoute();
+        const router = useRouter();
+
+        async function getVault() {
             try {
                 await vaultsService.getVault(route.params.id)
-                await vaultsService.getVaultKeeps(route.params.id)
-
             } catch (error) {
-                router.push({ name: 'Home' })
                 logger.log(error)
-                Pop.toast(error.message)
-
             }
-        })
+        }
+        async function getKeepsByVault() {
+            try {
+                await vaultKeepsService.getKeepsByVault(route.params.id)
+            } catch (error) {
+                logger.log(error)
+            }
+        }
+
+
+        onMounted(() => {
+            getVault();
+            getKeepsByVault();
+
+        });
         return {
             vault: computed(() => AppState.activeVault),
 
             account: computed(() => AppState.account),
-            keeps: computed(() => AppState.vaultKeeps),
+            keeps: computed(() => AppState.activeVaultKeeps),
             async deleteVault() {
                 try {
                     if (await Pop.confirm('are you sure you want to delete?')) {
@@ -59,10 +70,18 @@ export default {
                     logger.log(error)
                     Pop.toast(error.message)
                 }
+            },
+            async getVaultKeeps() {
+                try {
+                    await vaultKeepsService.getKeepsByVault(route.params.id)
+                } catch (error) {
+
+                }
             }
         };
+
+
     },
-    components: { KeepCard }
 };
 </script>
 <style scoped lang="scss">

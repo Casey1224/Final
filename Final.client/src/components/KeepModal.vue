@@ -40,8 +40,8 @@
                             <button class="btn btn-outline dropdown-toggle" type="button" id="modalDropMenu"
                                 data-bs-toggle="dropdown" aria-expanded="false">ADD TO VAULT</button>
                             <ul class="dropdown-menu" aria-labelledby="modalDropMenu">
-                                <li v-for="mv in myVaults" :key="mv.id" @click="addToVault(mv.id)">
-                                    <a class="dropdown-item" href="#">{{mv.name}}</a>
+                                <li v-for="av in accountVaults" :key="av.id" @click="addToVault(av.id)">
+                                    <a class="dropdown-item" href="#">{{av.name}}</a>
                                 </li>
                             </ul>
                         </div>
@@ -80,7 +80,9 @@ import { computed } from '@vue/reactivity';
 import { Modal } from 'bootstrap';
 import { useRouter, useRoute } from 'vue-router';
 import { AppState } from '../AppState';
+import { accountService } from '../services/AccountService';
 import { keepsService } from '../services/KeepsService';
+import { vaultKeepsService } from '../services/VaultKeepsService';
 import { vaultsService } from '../services/vaultsService';
 import { logger } from '../utils/Logger';
 import Pop from '../utils/Pop';
@@ -90,42 +92,34 @@ export default {
         const router = useRouter()
         const route = useRoute()
         return {
-            myVaults: computed(() => AppState.vaults.filter(v => v.creator.id == AppState.account.id)),
+            accountVaults: computed(() => AppState.vaults.filter(v => v.creator.id == AppState.account.id)),
             keep: computed(() => AppState.activeKeep),
             user: computed(() => AppState.account),
             route,
             goToProfile(id) {
-                Modal.getOrCreateInstance(document.getElementById('keepModal')).hide()
+                Modal.getOrCreateInstance(document.getElementById('keepModal')).toggle()
                 router.push({ name: 'Profile', params: { id } })
             },
+
             async addToVault(id) {
                 try {
-
-                    Modal.getOrCreateInstance(document.getElementById('active-keep')).hide()
+                    await vaultKeepsService.addToVaultKeep(body)
                     router.push({ name: 'Profile', params: { id } })
-                    await vaultsService.addToVault(body)
-                    AppState.activeKeep.kept++
-                    Pop.toast("added keep to your vault")
                 } catch (error) {
                     logger.log(error)
-                    Pop.toast(error.message)
                 }
-
-
-
+            },
+            async getAllVaults() {
+                try {
+                    await accountService.getAllVaults(route.params.id);
+                }
+                catch (error) {
+                    logger.log(error);
+                }
             },
 
-            // async removeKeep(id) {
-            //     try {
-            //         if (await Pop.confirm()) {
-            //             await keepsService.removeKeep(id)
-            //             Modal.getOrCreateInstance(document.getElementById("active-keep")).hide()
-            //         }
-            //     } catch (error) {
-            //         logger.log(error)
-            //         Pop.toast(error.message, "error")
-            //     }
-            // },
+
+
 
 
 
@@ -135,7 +129,7 @@ export default {
                     if (route.name == "Vault") {
                         if (await Pop.confirm("this cannot be undone, are you sure?")) {
                             await keepsService.removeVaultKeep(AppState.activeKeepVault.vaultKeepId)
-                            Modal.getOrCreateInstance(document.getElementById('active-keep')).hide()
+                            Modal.getOrCreateInstance(document.getElementById('active-keep')).toggle()
                             await vaultsService.getVaultKeeps(AppState.vaultKeeps.id)
                         }
                     }
@@ -143,7 +137,7 @@ export default {
                     if (route.name != 'Vault') {
                         if (await Pop.confirm("you sure you want to delete that?")) {
                             await keepsService.removeKeep(id, keepId)
-                            Modal.getOrCreateInstance(document.getElementById('active-keep')).hide()
+                            Modal.getOrCreateInstance(document.getElementById('active-keep')).toggle()
                             await keepsService.getAll()
                         }
                     }
@@ -152,9 +146,12 @@ export default {
                     Pop.toast(error.message)
                 }
             }
+
         };
     },
 };
+
+
 </script>
 <style >
 .keep-img {
@@ -175,3 +172,4 @@ export default {
     width: 50px
 }
 </style>
+

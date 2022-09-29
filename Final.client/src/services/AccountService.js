@@ -11,6 +11,14 @@ class AccountService {
       logger.error('HAVE YOU STARTED YOUR SERVER YET???', err)
     }
   }
+  async getAllVaults() {
+    try {
+      const res = await api.get('account/vaults')
+      AppState.vaults = res.data
+    } catch (error) {
+      logger.error("yo")
+    }
+  }
 }
 
 export const accountService = new AccountService()

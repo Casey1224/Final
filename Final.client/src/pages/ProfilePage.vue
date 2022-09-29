@@ -8,7 +8,7 @@
 
             <h6 v-if="account.id != profile.id">keeps:{{myKeeps.length}}</h6>
             <h6 v-if="account.id == profile.id">Keeps:{{myKeeps.length}}</h6>
-            <h6 v-if="account.id == profile.id">Vaults:{{myVaults.length}}</h6>
+            <h6 v-if="account.id == profile.id">Vaults:{{accountVaults.length}}</h6>
             <h6 v-if="account.id != profile.id">vaults:{{myVaults.length}}</h6>
         </div>
     </div>
@@ -21,18 +21,17 @@
                         +</button>
                 </template>
             </CreateVaultModal>
-            <!-- <h4 v-if="profile.id == account.id" class=" selectable" title="create vault" data-bs-toggle="modal"
-                data-bs-target="create-vault"> ＋</h4> -->
+
         </div>
     </div>
     <p>VAULTS</p>
-    <div class="row container " v-if="account.id != profile.id">
-        <div class="col-md-3 fixed-height selectable rounded" :title="v.name" v-for="v in myVaults" :key="v.id"
+    <div class="row container " v-if="account.id == profile.id">
+        <div class="col-md-3 fixed-height selectable rounded" :title="v.name" v-for="v in accountVaults" :key="v.id"
             @click="goToVault(v.id)">
             <h4><b>{{ v.name }}</b></h4>
         </div>
     </div>
-    <div class="row container " v-if="account.id == profile.id">
+    <div class="row container " v-else="account.id != profile.id">
         <div class="col-md-3 fixed-height selectable rounded" :title="v.name" v-for="v in myVaults" :key="v.id"
             @click="goToVault(v.id)">
             <h4><b>{{ v.name }}</b></h4>
@@ -96,6 +95,7 @@ import { logger } from '../utils/Logger';
 import Pop from '../utils/Pop';
 import CreateKeepModal from '../components/createKeepModal.vue';
 import CreateVaultModal from '../components/createVaultModal.vue';
+import { accountService } from '../services/AccountService';
 
 
 
@@ -128,10 +128,19 @@ export default {
                 logger.log(error);
             }
         }
+        async function getAllVaults() {
+            try {
+                await accountService.getAllVaults(route.params.id);
+            }
+            catch (error) {
+                logger.log(error);
+            }
+        }
         onMounted(() => {
             getProfileById();
             getProfileKeeps();
             getProfileVaults();
+            getAllVaults();
             // goToVault();
         });
         return {
@@ -141,19 +150,7 @@ export default {
             myKeeps: computed(() => AppState.activeProfileKeeps),
             myVaults: computed(() => AppState.activeProfileVaults),
             accountVaults: computed(() => AppState.vaults),
-            // async goToVault() {
-            //     try {
-            //         await vaultsService.getVault(route.params.id)
-            //         router.push({ name: 'Vault' })
-            //     } catch (error) {
-            //         Pop.error(error.message);
-            //         logger.log(error);
-            //     }
-            // }
-            // async goToVault() {
-            //     await vaultsService.getVault(id)
-            //     router.push({ name: 'Vault', params: { id } })
-            // }
+
             async goToVault(id) {
                 router.push({ name: "Vault", params: { id } });
             }

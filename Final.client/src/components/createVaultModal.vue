@@ -24,7 +24,7 @@
 
                         Private
                         <div class="row mt-2">
-                            <sub>Private vaults can only be seen by you.</sub>
+                            <sub>Private vaults cannot be seen by others.</sub>
                         </div>
                     </div>
 
@@ -43,6 +43,7 @@
 <script>
 import { Modal } from 'bootstrap';
 import { ref, watchEffect } from 'vue';
+import { useRoute } from 'vue-router';
 import { keepsService } from '../services/KeepsService';
 import { vaultsService } from '../services/vaultsService';
 import { logger } from '../utils/Logger';
@@ -52,6 +53,7 @@ export default {
 
     setup() {
         const editable = ref({})
+        // const route = useRoute();
         watchEffect(() => {
             logger.log('watch')
 
@@ -60,6 +62,7 @@ export default {
         //     const editable = ref({})
         return {
             editable,
+            // route,
             // async createVault() {
             //     try {
             //         await vaultsService.createVault(editable.value)
@@ -81,6 +84,14 @@ export default {
                     Pop.toast(error.message)
                 }
             },
+            // async createVault() {
+            //     try {
+            //         editable.value.vaultId = route.params.id
+            //         await vaultsService.createVault(editable.value)
+            //     } catch (error) {
+            //         logger.error(error)
+            //     }
+            // },
         };
     },
 };
