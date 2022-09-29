@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-12 d-flex justify content-between">
             <h2>{{vault.name}}</h2>
-            <button class="btn btn-outline-info" v-if="vault.creator?.id == account id" @click="deleteVault"> Delete
+            <button class="btn btn-outline-info" v-if=" account.id == vault.creatorId" @click="deleteVault"> Delete
                 Vault</button>
 
         </div>
@@ -25,14 +25,16 @@ import { router } from '../router';
 import { logger } from '../utils/Logger';
 import Pop from '../utils/Pop';
 import { vaultsService } from '../services/vaultsService.js'
+import { vaultKeepsService } from '../services/VaultKeepsService.js'
+import { useRoute } from 'vue-router';
 export default {
     setup() {
         const route = useRoute()
         onMounted(async () => {
             try {
                 await vaultsService.getVault(route.params.id)
-                await vaultsService.getVaultKeeps(AppState.activeVault.id)
-                logger.log(AppState.keeps)
+                await vaultsService.getVaultKeeps(route.params.id)
+
             } catch (error) {
                 router.push({ name: 'Home' })
                 logger.log(error)
@@ -42,14 +44,16 @@ export default {
         })
         return {
             vault: computed(() => AppState.activeVault),
-            keeps: computed(() => AppState.keeps),
-            account: computed(() => AppsState.account),
-            async deleteVault() {
+
+            account: computed(() => AppState.account),
+            keeps: computed(() => AppState.vaultKeeps),
+            async deleteVault(id) {
                 try {
                     if (await Pop.confirm('are you sure you want to delete?')) {
                         await vaultsService.deleteVault(AppState.activeVault.id)
-                        router.push({ name: 'Home' })
-                        await vaultsService.getVaults()
+
+                        router.push({ name: 'Profile', params: AppState.account.id })
+
                     }
                 } catch (error) {
                     logger.log(error)

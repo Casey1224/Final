@@ -21,7 +21,16 @@ export default {
         }
     },
     setup() {
-        return {};
+        return {
+            // async goToVault() {
+            //     try {
+            //         Modal.getOrCreateInstance(document.getElementById("vaultModal")).toggle();
+            //         await vaultsService.getVault(props.vault.id)
+            //     } catch (error) {
+            //         logger.error(error)
+            //     }
+            // }
+        };
     },
 };
 </script>

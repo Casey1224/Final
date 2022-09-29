@@ -77,6 +77,7 @@ import { Modal } from 'bootstrap';
 import { useRouter, useRoute } from 'vue-router';
 import { AppState } from '../AppState';
 import { keepsService } from '../services/KeepsService';
+import { vaultsService } from '../services/vaultsService';
 import { logger } from '../utils/Logger';
 import Pop from '../utils/Pop';
 
@@ -85,13 +86,29 @@ export default {
         const router = useRouter()
         const route = useRoute()
         return {
-            myVaults: computed(() => AppState.vaults.filter(v => v.creator.id == AppState.account.id)),
+            myVaults: computed(() => AppState.vaults),
             keep: computed(() => AppState.activeKeep),
             user: computed(() => AppState.account),
             route,
             goToProfile(id) {
                 Modal.getOrCreateInstance(document.getElementById('keepModal')).hide()
                 router.push({ name: 'Profile', params: { id } })
+            },
+            async addToVault(id) {
+                try {
+
+                    Modal.getOrCreateInstance(document.getElementById('active-keep')).hide()
+                    router.push({ name: 'Profile', params: { id } })
+                    await vaultsService.addToVault(body)
+                    AppState.activeKeep.kept++
+                    Pop.toast("added keep to your vault")
+                } catch (error) {
+                    logger.log(error)
+                    Pop.toast(error.message)
+                }
+
+
+
             },
             async removeKeep(id, keepId) {
                 try {
