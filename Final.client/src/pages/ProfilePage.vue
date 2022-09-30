@@ -1,7 +1,7 @@
 <template>
-    <div class="row">
+    <div class="row container m-2">
 
-        <img :src="profile?.picture" class=" ml-3  modal-woah border border-circle" alt="">
+        <img :src="profile?.picture" class="   modal-woah border border-circle" alt="">
 
         <div class="col-4">
             <h2>{{profile?.name}}</h2>
@@ -13,54 +13,47 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-12 d-flex">
-            <h4>Vaults</h4>
+        <div class="col-12 d-flex m-2">
+
             <CreateVaultModal>
                 <template #button>
-                    <button class="btn btn-secondary" data-bs-target="#create-vault" data-bs-toggle="modal">Create Vault
+                    <button class="btn btn-success" data-bs-target="#create-vault" data-bs-toggle="modal">Create Vault
                         +</button>
                 </template>
             </CreateVaultModal>
 
         </div>
     </div>
-    <p>VAULTS</p>
+
     <div class="row container " v-if="account.id == profile.id">
-        <div class="col-md-3 fixed-height selectable rounded" :title="v.name" v-for="v in accountVaults" :key="v.id"
-            @click="goToVault(v.id)">
+        <div class="col-md-3 fixed-height selectable rounded border border-info mb-4  mr-1" :title="v.name"
+            v-for="v in accountVaults" :key="v.id" @click="goToVault(v.id)">
             <h4><b>{{ v.name }}</b></h4>
         </div>
     </div>
     <div class="row container " v-else="account.id != profile.id">
-        <div class="col-md-3 fixed-height selectable rounded" :title="v.name" v-for="v in myVaults" :key="v.id"
-            @click="goToVault(v.id)">
+        <div class="col-md-3 fixed-height selectable rounded border border-info mb-4 mr-1" :title="v.name"
+            v-for="v in myVaults" :key="v.id" @click="goToVault(v.id)">
             <h4><b>{{ v.name }}</b></h4>
         </div>
     </div>
-    <!-- <div class="row">
-        <div class="masonry " v-if="account.id == profile.id">
-            <div class="" v-for="v in myVaults" :key="v.id">
-                <VaultCard :vault="v" />
-            </div>
-        </div>
-    </div> -->
+
     <div>
-        <p>KEEPS</p>
+
 
         <div class="row">
-            <div class="col-12 d-flex">
-                <h4>Keeps</h4>
+            <div class="col-12 m-2 d-flex">
+
                 <CreateKeepModal>
                     <template #button>
-                        <button class="btn btn-secondary" data-bs-target="#create-keep" data-bs-toggle="modal">Create
+                        <button class="btn btn-success" data-bs-target="#create-keep" data-bs-toggle="modal">Create
                             Keep
                             +</button>
                     </template>
                 </CreateKeepModal>
 
 
-                <!-- <h4 v-if="profile.id == account.id" class="bg-green selectable" title="create keep"
-                    data-bs-toggle="modal" data-bs-target="create-keep"> ＋</h4> -->
+
             </div>
         </div>
 

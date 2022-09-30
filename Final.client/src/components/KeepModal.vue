@@ -49,13 +49,21 @@
 
 
 
-                        <div class="" v-if="user?.id == keep.creator?.id"
+                        <!-- <div class="" v-if=" user?.id == keep.creator?.id"
                             @click="removeKeep(keep.vaultKeepId, keep.id)">
-                            <h6>🗑</h6>
+                            <h6>remove Keep: 🗑</h6>
+                        </div> -->
+                        <!-- <div class="" v-if=" user?.id == keep.creator?.id
+                        " @click="removeVaultKeep(keep?.id)">
+                            <h6>Remove Vault Keep: 🐸</h6>
+                        </div> -->
+                        <div class="" v-if=" user?.id == keep.creator?.id"
+                            @click="removeKeep(keep.vaultKeepId, keep.id)">
+                            <h6>remove Keep: 🗑</h6>
                         </div>
-                        <div class="" v-if="route.name == 'Vault' && keep?.vaultKeepId != '' &&
-                        keep.creator?.id != user.id" @click="removeKeep(keep.vaultKeepId, keep.id)">
-                            <h6>🗑</h6>
+                        <div class="" v-if=" user?.id == keep.creator?.id
+                        " @click="removeKeep(keep.vaultKeepId, keep.id)">
+                            <h6>Remove Vault Keep: 🐸</h6>
                         </div>
                         <div>
                             <img :src="keep.creator?.picture" class=" selectable modal-prof border border-circle" alt=""
@@ -79,6 +87,7 @@
 <script>
 import { computed } from '@vue/reactivity';
 import { Modal } from 'bootstrap';
+import { KeepAlive } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { AppState } from '../AppState';
 import { accountService } from '../services/AccountService';
@@ -93,8 +102,10 @@ export default {
         const router = useRouter()
         const route = useRoute()
         return {
+
             accountVaults: computed(() => AppState.vaults.filter(v => v.creator.id == AppState.account.id)),
             keep: computed(() => AppState.activeKeep),
+            vaultKeep: computed(() => AppState.activeVaultKeeps),
             user: computed(() => AppState.account),
             route,
             goToProfile(id) {
@@ -110,6 +121,28 @@ export default {
                     logger.log(error)
                 }
             },
+            async removeKeep(id, keepId) {
+                try {
+                    if (route.name == "Vault") {
+                        if (await Pop.confirm("You sure you want to delete this from this vault?")) {
+                            const vaultKeepId = AppState.activeVaultKeeps.find(x => x.id === keepId).vaultKeepId
+                            await keepsService.removeVaultKeep(vaultKeepId)
+                            Modal.getOrCreateInstance(document.getElementById('active-keep')).hide()
+                            await vaultsService.getVaultKeeps(AppState.activeVault.id)
+                        }
+                    }
+                    if (route.name != "Vault") {
+                        if (await Pop.confirm("You sure you want to delete this?")) {
+                            await keepsService.removeKeep(id, keepId)
+                            Modal.getOrCreateInstance(document.getElementById('active-keep')).hide()
+                            await keepsService.getKeeps()
+                        }
+                    }
+                } catch (error) {
+                    logger.log(error)
+                    Pop.toast(error.message)
+                }
+            },
             async getAllVaults() {
                 try {
                     await accountService.getAllVaults(route.params.id);
@@ -118,39 +151,57 @@ export default {
                     logger.log(error);
                 }
             },
+            // async removeKeep(id) {
+            //     try {
+
+            //         if (await Pop.confirm('are you sure you want to delete?')) {
+            //             await keepsService.removeKeep(id)
+
+
+            //         }
+            //     } catch (error) {
+            //         logger.log(error)
+            //         Pop.toast(error.message)
+            //     }
+            // },
+            // async removeVaultKeep(id) {
+            //     try {
+            //         console.log("Vault keep before remove")
+            //         await vaultKeepsService.removeKeep(id)
+            //     } catch (error) {
+            //         logger.log(error)
+            //         Pop.toast(error.message)
+            //     }
+            // }
 
 
 
 
 
 
-
-            async removeKeep(id, keepId) {
-                try {
-                    if (route.name == "Vault") {
-                        if (await Pop.confirm("this cannot be undone, are you sure?")) {
-                            await keepsService.removeVaultKeep(AppState.activeKeepVault.vaultKeepId)
-                            Modal.getOrCreateInstance(document.getElementById('active-keep')).toggle()
-                            await vaultsService.getVaultKeeps(AppState.vaultKeeps.id)
-                        }
-                    }
-
-                    if (route.name != 'Vault') {
-                        if (await Pop.confirm("you sure you want to delete that?")) {
-                            await keepsService.removeKeep(id, keepId)
-                            Modal.getOrCreateInstance(document.getElementById('active-keep')).toggle()
-                            await keepsService.getAll()
-                        }
-                    }
-                } catch (error) {
-                    logger.log(error)
-                    Pop.toast(error.message)
-                }
-            }
-
-        };
+        }
     },
-};
+    // async removeKeep(id, keepId){
+    //     try {
+    //         await Pop.confirm("are you sure you want to delete this? "){
+    //       await keepsService.removeKeep(id, keepId)
+    //       Modal.getOrCreateInstance(document.getElementById("active-keep")).toggle()
+    //     } catch (error) {
+    //         logger.log(error)
+    //         Pop.toast(error.message)
+    //     }
+    // }},
+
+
+
+
+
+
+
+
+}
+
+
 
 
 </script>

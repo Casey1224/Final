@@ -22,18 +22,26 @@ class KeepsService {
     async removeKeep(id, keepId) {
         const res = await api.delete('api/keeps/' + keepId)
         logger.log('Delete Cultist', res.data)
-        AppState.keeps = AppState.keeps.filter(k => k.id != id)
+
 
     }
+    // async removeKeep(id, keepId) {
+    //     const res = await api.delete('api/keeps/' + id)
+    //     logger.log('Delete Cultist', res.data)
+    //     AppState.keeps = AppState.keeps.filter(k => k.id != id)
+
+    // }
     async removeVaultKeep(id) {
         const res = await api.delete('api/vaultkeeps/' + id)
         logger.log('delete cultist', res.data)
-        AppState.keeps = AppState.keeps.filter(k => k.id != id)
+        // AppState.keeps = AppState.keeps.filter(k => k.id != id)
     }
-    // async getKeepsByProfileId() {
-    //     const res = await api.get(`api/profiles/${id}/keeps`)
-    //     logger.log('got keeps by account')
-    //     AppState.activeProfileKeeps = res.data
+    // async removeVaultKeep(id) {
+    //     let vaultKeep = AppState.activeVaultKeeps.find(v => v.vaultKeepId == id)
+    //     logger.log(vaultKeep)
+    //     const res = await api.delete("api/vaultkeeps/" + vaultKeepId)
+    //     logger.log(res.data)
+    //     AppState.vaultKeeps.filter(k => k.id != vaultKeepId)
     // }
 
 }
