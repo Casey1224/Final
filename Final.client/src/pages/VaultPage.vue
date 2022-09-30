@@ -36,7 +36,7 @@ export default {
             try {
                 await vaultsService.getVault(route.params.id)
             } catch (error) {
-                logger.log(error)
+                router.push({ name: "Home" })
             }
         }
         async function getKeepsByVault() {
