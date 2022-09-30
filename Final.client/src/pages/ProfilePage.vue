@@ -146,7 +146,27 @@ export default {
 
             async goToVault(id) {
                 router.push({ name: "Vault", params: { id } });
-            }
+            },
+
+            // async gotToVault(id) {
+            //     try {
+            //         router.push({ name: "Vault", params: { id } })
+            //     }
+            //     catch (error) {
+            //         router.push({ name: 'Home' })
+            //         Pop.error(error.message);
+            //         logger.log(error);
+            //     }
+            // }
+
+
+            // async goToVault(id) {
+            //     if (account.id == profile.id) {
+            //         router.push({ name: "Vault", params: { id } })
+            //     } else {
+            //         router.push({ name: "Home", params: { id } })
+            //     }
+            // }
         };
     },
     components: { CreateVaultModal, CreateKeepModal }
