@@ -1,82 +1,101 @@
 <template>
     <div class="modal fade" id="keepModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
-                <div class="modal-header justify-text-between ">
-                    <div class="col-10 justify-content-between">
 
-                        <span class="first-yes" v-for="k in keep?.views" :key="k">views : {{keep.views}}</span>
-                        kept : {{keep?.kept}}
-                    </div>
-
-
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-
-                </div>
-                <div class="modal-body ">
+                <div class="container ">
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-md-6 my-2">
                             <img class="img-fluid rounded keep-img" :src="keep?.img" alt="">
                         </div>
-                        <div class="col-6">
-                            <div class="text-center">
+                        <div class="col-md-6 justify-content-around d-flex">
+
+
+
+                            <div class="row text-center">
+                                <h5 class="">
+                                    <i class="mdi mdi-eye ">
+                                        <span class="ms-2"> {{ keep.views }} </span>
+                                    </i>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <i class="mdi mdi-file-key">
+                                        <span class="ms-2"> {{ keep.kept }} </span>
+                                    </i>
+                                </h5>
                                 <div class="pt-2">
-                                    <h1 class="border-bottom ">{{keep?.name}}</h1>
+                                    <h1 class=" ">{{keep?.name}}</h1>
                                 </div>
                                 <div class="pt-2">
-                                    {{keep?.description}}
+                                    <h5 class="border-bottom">
 
+                                        {{keep?.description}}
+                                    </h5>
+
+                                </div>
+                                <div class="col-12">
+
+                                    <div class="d-flex justify-content-between ">
+
+                                        <div class="dropdown" v-if="user.id != null">
+                                            <button class="btn btn-outline dropdown-toggle" type="button"
+                                                id="modalDropMenu" data-bs-toggle="dropdown" aria-expanded="false">ADD
+                                                TO VAULT</button>
+                                            <ul class="dropdown-menu" aria-labelledby="modalDropMenu">
+                                                <li v-for="av in accountVaults" :key="av.id">
+                                                    <a @click="addToVault(av.id, keep.id)" class="dropdown-item"
+                                                        href="#">{{av.name}}</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="" v-if=" user?.id == keep.creator?.id"
+                                            @click="removeKeep(keep.vaultKeepId, keep.id)">
+                                            <h6>remove Keep: 🗑</h6>
+                                        </div>
+                                        <div class="" v-if=" 
+                                            route.name == 'vault' && 
+                                            keep?.vaultKeepId != '' &&
+                                             keep.creator?.id == user?.id 
+                                        " @click="removeKeep(keep.vaultKeepId, keep.id)">
+                                            <h6>Remove Vault Keep: 🗑</h6>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <img :src="keep.creator?.picture"
+                                                class=" selectable modal-prof border border-circle" alt=""
+                                                @click="goToProfile(keep.creator?.id)">
+                                            <p class="ps-1 m-0 text-wrap">{{keep.creator?.name}}</p>
+                                        </div>
+                                        <div>
+
+
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
-                <div class="modal-footer">
-
-                    <div class="col-12 d-flex justify-content-between">
-
-                        <div class="dropdown" v-if="user.id != null">
-                            <button class="btn btn-outline dropdown-toggle" type="button" id="modalDropMenu"
-                                data-bs-toggle="dropdown" aria-expanded="false">ADD TO VAULT</button>
-                            <ul class="dropdown-menu" aria-labelledby="modalDropMenu">
-                                <li v-for="av in accountVaults" :key="av.id">
-                                    <a @click="addToVault(av.id, keep.id)" class="dropdown-item"
-                                        href="#">{{av.name}}</a>
-                                </li>
-                            </ul>
-                        </div>
 
 
-
-                        <!-- <div class="" v-if=" user?.id == keep.creator?.id"
-                            @click="removeKeep(keep.vaultKeepId, keep.id)">
-                            <h6>remove Keep: 🗑</h6>
-                        </div> -->
-                        <!-- <div class="" v-if=" user?.id == keep.creator?.id
-                        " @click="removeVaultKeep(keep?.id)">
-                            <h6>Remove Vault Keep: 🐸</h6>
-                        </div> -->
-                        <div class="" v-if=" user?.id == keep.creator?.id"
-                            @click="removeKeep(keep.vaultKeepId, keep.id)">
-                            <h6>remove Keep: 🗑</h6>
-                        </div>
-                        <div class="" v-if=" user?.id == keep.creator?.id
-                        " @click="removeKeep(keep.vaultKeepId, keep.id)">
-                            <h6>Remove Vault Keep: 🐸</h6>
-                        </div>
-                        <div>
-                            <img :src="keep.creator?.picture" class=" selectable modal-prof border border-circle" alt=""
-                                @click="goToProfile(keep.creator?.id)">{{keep.creator?.name}}
-                        </div>
-                        <div>
-
-                        </div>
-                    </div>
-                </div>
             </div>
+
+
         </div>
     </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -127,14 +146,14 @@ export default {
                         if (await Pop.confirm("You sure you want to delete this from this vault?")) {
                             const vaultKeepId = AppState.activeVaultKeeps.find(x => x.id === keepId).vaultKeepId
                             await keepsService.removeVaultKeep(vaultKeepId)
-                            Modal.getOrCreateInstance(document.getElementById('active-keep')).hide()
+                            Modal.getOrCreateInstance(document.getElementById('active-keep')).push()
                             await vaultsService.getVaultKeeps(AppState.activeVault.id)
                         }
                     }
                     if (route.name != "Vault") {
                         if (await Pop.confirm("You sure you want to delete this?")) {
                             await keepsService.removeKeep(id, keepId)
-                            Modal.getOrCreateInstance(document.getElementById('active-keep')).hide()
+                            Modal.getOrCreateInstance(document.getElementById('active-keep')).push()
                             await keepsService.getKeeps()
                         }
                     }
@@ -207,8 +226,7 @@ export default {
 </script>
 <style >
 .keep-img {
-    height: 300px;
-    width: 300px;
+
     object-fit: cover;
 }
 

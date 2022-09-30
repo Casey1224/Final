@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-12 d-flex justify content-between">
             <h2>{{vault.name}}</h2>
-            <button class="btn btn-outline-info" v-if=" account.id == vault.creatorId" @click="deleteVault"> Delete
+            <button class="btn btn-outline-info" v-if=" account.id == vault.creator?.id" @click="deleteVault"> Delete
                 Vault</button>
 
         </div>
